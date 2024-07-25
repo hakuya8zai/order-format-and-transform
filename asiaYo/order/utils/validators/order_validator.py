@@ -15,10 +15,12 @@ class NameValidator(OrderValidator):
         if not all(word[0].isupper() for word in order.name.split()):
             raise ValueError("Name is not capitalized")
 
+
 class CurrencyValidator(OrderValidator):
     def validate(self, order: OrderSchema) -> None:
-        if order.currency not in ['TWD', 'USD']:
+        if order.currency not in ["TWD", "USD"]:
             raise ValueError("Currency is not supported")
+
 
 class PriceValidator(OrderValidator):
     def validate(self, order: OrderSchema) -> None:

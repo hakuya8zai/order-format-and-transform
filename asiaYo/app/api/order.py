@@ -5,6 +5,7 @@ from asiaYo.order.order_services import OrderService
 
 router = APIRouter()
 
+
 @router.post("/", response_model=Order)
 def create_order(order: OrderSchema):
     try:
