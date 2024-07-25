@@ -4,15 +4,16 @@ from asiaYo.order.schemas.order_schemas import OrderSchema
 
 class OrderTransformer(ABC):
     @abstractmethod
-    def transform(self, order) -> OrderSchema:
+    def transform(order) -> OrderSchema:
         pass
 
 
 class CurrencyTransformer(OrderTransformer):
-    def transform(self, order: OrderSchema):
+    @staticmethod
+    def transform(order: OrderSchema):
         if order.currency == "USD":
-            price = int(order.price)
-            price *= 31
-            order.price = str(price)
+            order_price = int(order.price)
+            order_price *= 31
+            order.price = str(order_price)
             order.currency = "TWD"
         return order

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class AddressSchema(BaseModel):
@@ -13,3 +13,11 @@ class OrderSchema(BaseModel):
     address: AddressSchema
     price: str
     currency: str
+
+    @field_validator("price")
+    def check_price_is_numeric(cls, value):
+        try:
+            int(value)
+        except ValueError:
+            raise ValueError("Price must be a numeric value.")
+        return value
