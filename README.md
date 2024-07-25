@@ -83,3 +83,54 @@ asiaYo/
 ### Dependency Inversion
 
 - 透過 Dependency Injection 實現，讓 OrderService 並不直接依賴於 Validators, Transformers ，而是依賴於 order_dependencies 這個抽象層進行管理
+
+## SQL 測試題回答
+
+### 題目一
+
+```
+SELECT
+    bnbs.id AS bnb_id,
+    bnbs.name AS bnb_name,
+    SUM(orders.amount) AS total_amount
+FROM
+    orders
+JOIN
+    bnbs ON orders.bnb_id = bnbs.id
+WHERE
+    orders.created_at >= '2023-05-01'
+    AND orders.created_at < '2023-06-01'
+    AND orders.currency = 'TWD'
+GROUP BY
+    bnbs.id
+ORDER BY
+    total_amount DESC
+LIMIT 10;
+```
+
+### 題目二
+
+1. 下 EXPLAIN 分析，確認 SQL 的執行順序、方法、Type 有無問題
+2. 如果確認沒有問題，就會看算法有沒有可優化之處，舉例來說，如果 bnbs 表比 orders 表小非常多，可以先列出每一個 bnb 的五月台幣訂單金額，再進行排序，修改後的 SQL 如下（只有在 bnbs 表非常小的情況下才會是優化）：
+
+```
+SELECT
+    bnbs.id AS bnb_id,
+    bnbs.name AS bnb_name,
+    COALESCE(SUM(orders.amount), 0) AS total_amount
+FROM
+    bnbs
+LEFT JOIN
+    orders ON orders.bnb_id = bnbs.id
+    AND orders.created_at >= '2023-05-01'
+    AND orders.created_at < '2023-06-01'
+    AND orders.currency = 'TWD'
+GROUP BY
+    bnbs.id, bnbs.name
+ORDER BY
+    total_amount DESC
+LIMIT 10;
+```
+
+3. 如果優化算法後依然有效能問題，在不考慮硬體的情況下，會懷疑是表的內容太大加上多次全表掃描，就可能導致 SQL 執行速度太慢，所以會考慮加上 Index :`CREATE INDEX IX_orders_created_and_currency ON orders(created_at, currency);`
+4. 如果加上 Index 後依然無效，且其他 SQL 查詢也遇到類似問題，代表資料庫確實很龐大，又有大量讀寫需求的情況下，可能就會評估做 Partition
