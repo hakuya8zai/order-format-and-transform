@@ -1,5 +1,9 @@
 # order-format-transform
 
+## 概述
+
+- 這是一個使用 FastAPI 進行實作的訂單驗證與轉換功能，使用 Docker 進行環境配置與管理，包含驗證、轉換功能並包含單元測試。
+
 ## Repo 架構
 
 ```
@@ -26,7 +30,22 @@ asiaYo/
 ├── main.py                     # FastAPI app
 ├── README.md
 ├── requirements.txt
+├── Dockerfile
+├── Makefile
 ```
+
+## Getting Start
+
+### 開發環境
+
+0. 確認有安裝 [Docker](https://www.docker.com/products/docker-desktop)
+1. cd 至 project 資料夾以後，輸入 `make build`
+2. 輸入 `make runlocal` 啟動 local server 進入 port
+3. 可以移動到 /docs 直接用 swagger 測試 API
+
+### 進行測試
+
+1. 安裝環境完成後，使用 `make test` 即可執行自動化測試
 
 ## Design Pattern
 
@@ -64,8 +83,3 @@ asiaYo/
 ### Dependency Inversion
 
 - 透過 Dependency Injection 實現，讓 OrderService 並不直接依賴於 Validators, Transformers ，而是依賴於 order_dependencies 這個抽象層進行管理
-
-## 測試方式
-
-- `pip install pytest` 安裝 pytest
-- `pytest` 運行指令，進行測試
