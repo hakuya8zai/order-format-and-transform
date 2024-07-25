@@ -19,6 +19,10 @@ asiaYo/
 │   │   ├── order_models.py     # 資料模型
 │   ├── schemas/
 │   │   ├── order_schemas.py    # 資料格式
+│   ├── tests/
+│   │   ├── test_services.py            # 測試 OrderService
+│   │   ├── test_transformers.py        # 測試 Transformers
+│   │   ├── test_validators.py          # 測試 Validators
 ├── main.py                     # FastAPI app
 ├── README.md
 ├── requirements.txt
@@ -60,3 +64,8 @@ asiaYo/
 ### Dependency Inversion
 
 - 透過 Dependency Injection 實現，讓 OrderService 並不直接依賴於 Validators, Transformers ，而是依賴於 order_dependencies 這個抽象層進行管理
+
+## 測試方式
+
+- `pip install pytest` 安裝 pytest
+- `pytest` 運行指令，進行測試
